@@ -22,8 +22,7 @@ from facefusion.utilities import is_image, is_video, detect_fps, compress_image,
 warnings.filterwarnings('ignore', category = FutureWarning, module = 'insightface')
 warnings.filterwarnings('ignore', category = UserWarning, module = 'torchvision')
 
-
-def cli() -> None:
+def get_argument_parser():
 	signal.signal(signal.SIGINT, lambda signal_number, frame: destroy())
 	program = ArgumentParser(formatter_class = lambda prog: HelpFormatter(prog, max_help_position = 120), add_help = False)
 	# general
@@ -75,11 +74,14 @@ def cli() -> None:
 	# uis
 	group_uis = program.add_argument_group('uis')
 	group_uis.add_argument('--ui-layouts', help = wording.get('ui_layouts_help').format(choices = ', '.join(list_module_names('facefusion/uis/layouts'))), dest = 'ui_layouts', default = [ 'default' ], nargs = '+')
-	run(program)
 
+	return program
+
+def cli() -> None:
+	run(get_argument_parser())
 
 def apply_args(program : ArgumentParser) -> None:
-	args = program.parse_args()
+	args = program.parse_args([])
 	# general
 	facefusion.globals.source_path = args.source_path
 	facefusion.globals.target_path = args.target_path
