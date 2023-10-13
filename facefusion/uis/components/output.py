@@ -6,6 +6,7 @@ from facefusion import wording
 from facefusion.core import limit_resources, conditional_process
 from facefusion.uis.core import get_ui_component
 from facefusion.utilities import is_image, is_video, normalize_output_path, clear_temp
+from facefusion.uis.typing import Update
 
 OUTPUT_IMAGE : Optional[gradio.Image] = None
 OUTPUT_VIDEO : Optional[gradio.Video] = None
@@ -44,18 +45,18 @@ def listen() -> None:
 	OUTPUT_CLEAR_BUTTON.click(clear, outputs = [ OUTPUT_IMAGE, OUTPUT_VIDEO ])
 
 
-def start(output_path : str) -> Tuple[gradio.Image, gradio.Video]:
+def start(output_path : str) -> Tuple[Update, Update]:
 	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path, facefusion.globals.target_path, output_path)
 	limit_resources()
 	conditional_process()
 	if is_image(facefusion.globals.output_path):
-		return gradio.Image(value = facefusion.globals.output_path, visible = True), gradio.Video(value = None, visible = False)
+		return gradio.update(value = facefusion.globals.output_path, visible = True), gradio.update(value = None, visible = False)
 	if is_video(facefusion.globals.output_path):
-		return gradio.Image(value = None, visible = False), gradio.Video(value = facefusion.globals.output_path, visible = True)
-	return gradio.Image(), gradio.Video()
+		return gradio.update(value = None, visible = False), gradio.update(value = facefusion.globals.output_path, visible = True)
+	return gradio.update(), gradio.update()
 
 
-def clear() -> Tuple[gradio.Image, gradio.Video]:
+def clear() -> Tuple[Update, Update]:
 	if facefusion.globals.target_path:
 		clear_temp(facefusion.globals.target_path)
-	return gradio.Image(value = None), gradio.Video(value = None)
+	return gradio.update(value = None), gradio.update(value = None)

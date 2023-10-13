@@ -4,6 +4,7 @@ import gradio
 import facefusion.globals
 from facefusion import wording
 from facefusion.utilities import is_image
+from facefusion.uis.typing import Update
 from facefusion.uis.core import register_ui_component
 
 SOURCE_FILE : Optional[gradio.File] = None
@@ -38,9 +39,9 @@ def listen() -> None:
 	SOURCE_FILE.change(update, inputs = SOURCE_FILE, outputs = SOURCE_IMAGE)
 
 
-def update(file: IO[Any]) -> gradio.Image:
+def update(file: IO[Any]) -> Update:
 	if file and is_image(file.name):
 		facefusion.globals.source_path = file.name
-		return gradio.Image(value = file.name, visible = True)
+		return gradio.update(value = file.name, visible = True)
 	facefusion.globals.source_path = None
-	return gradio.Image(value = None, visible = False)
+	return gradio.update(value = None, visible = False)

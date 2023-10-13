@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Dict, Literal
 import gradio
 
 Component = gradio.File or gradio.Image or gradio.Video or gradio.Slider
@@ -30,3 +30,4 @@ ComponentName = Literal\
 ]
 WebcamMode = Literal[ 'inline', 'udp', 'v4l2' ]
 StreamMode = Literal[ 'udp', 'v4l2' ]
+Update = Dict[Any, Any]
