@@ -4,7 +4,6 @@ from pathlib import Path
 
 import launch
 import pkg_resources
-import torch.cuda as cuda
 
 _REQUIREMENT_PATH = Path(__file__).absolute().parent / "requirements.txt"
 
@@ -21,6 +20,8 @@ def _get_installed_version(package: str) -> str | None:
 
 
 if not launch.is_installed("onnxruntime") and not launch.is_installed("onnxruntime-gpu"):
+    import torch.cuda as cuda
+
     if cuda.is_available():
         launch.run_pip("install onnxruntime-gpu>=1.16.0")
     else:
